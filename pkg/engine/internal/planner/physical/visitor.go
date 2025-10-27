@@ -15,4 +15,5 @@ type Visitor interface {
 	VisitTopK(*TopK) error
 	VisitParallelize(*Parallelize) error
 	VisitScanSet(*ScanSet) error
+	VisitJoin(*Join) error
 }
