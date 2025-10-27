@@ -159,8 +159,6 @@ func (p *Planner) process(inst logical.Value, ctx *Context) (Node, error) {
 		return p.processRangeAggregation(inst, ctx)
 	case *logical.VectorAggregation:
 		return p.processVectorAggregation(inst, ctx)
-	case *logical.Parse:
-		return p.processParse(inst, ctx)
 	case *logical.BinOp:
 		return p.processBinOp(inst, ctx)
 	case *logical.UnaryOp:
