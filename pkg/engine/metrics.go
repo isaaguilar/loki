@@ -9,6 +9,7 @@ var (
 	status               = "status"
 	statusSuccess        = "success"
 	statusFailure        = "failure"
+	statusInitError      = "initialization-error"
 	statusNotImplemented = "notimplemented"
 )
 
@@ -17,6 +18,7 @@ type metrics struct {
 	subqueries       *prometheus.CounterVec
 	logicalPlanning  prometheus.Histogram
 	physicalPlanning prometheus.Histogram
+	workflowPlanning prometheus.Histogram
 	execution        prometheus.Histogram
 }
 
@@ -33,6 +35,14 @@ func newMetrics(r prometheus.Registerer) *metrics {
 		physicalPlanning: promauto.With(r).NewHistogram(prometheus.HistogramOpts{
 			Name: "loki_engine_v2_physical_planning_duration_seconds",
 			Help: "Duration of physical query planning in seconds",
+			Buckets: append(
+				prometheus.DefBuckets,                    // 0.005s -> 10s
+				prometheus.LinearBuckets(15, 5.0, 10)..., // 15s -> 60s
+			),
+		}),
+		workflowPlanning: promauto.With(r).NewHistogram(prometheus.HistogramOpts{
+			Name: "loki_engine_v2_workflow_planning_duration_seconds",
+			Help: "Duration of workflow query planning in seconds",
 			Buckets: append(
 				prometheus.DefBuckets,                    // 0.005s -> 10s
 				prometheus.LinearBuckets(15, 5.0, 10)..., // 15s -> 60s
